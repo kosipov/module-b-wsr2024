@@ -1,0 +1,32 @@
+version: '3'
+
+networks:
+  wsr-network:
+
+services:
+  php-fpm:
+    image: arm-php-fpm-mysql:8.2
+    ports:
+      - '6000:6000'
+      - '8000:8000'
+      - '9000:9000'
+    volumes:
+      - ./wsr:/var/www/html:rw,cached
+      - ./.docker/conf/php/php.ini:/usr/local/etc/php/php.ini:ro
+    container_name: wsr-php-fpm
+    entrypoint: [ 'php', '/var/www/html/artisan', 'serve', '--host=0.0.0.0' ]
+    networks:
+      - wsr-network
+    environment:
+      - APP_ENV=local
+  artisan:
+    image: arm-php-fpm-mysql:8.2
+    volumes:
+      - ./wsr:/var/www/html:rw,cached
+      - ./.docker/conf/php/php.ini:/usr/local/etc/php/php.ini:ro
+    container_name: wsr-artisan
+    entrypoint: [ 'php', '/var/www/html/artisan']
+    networks:
+      - wsr-network
+    environment:
+      - APP_ENV=local
