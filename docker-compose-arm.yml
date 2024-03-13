@@ -5,9 +5,7 @@ networks:
 
 services:
   php-fpm:
-    build:
-      context: ./.docker/php-x86-image
-      dockerfile: Dockerfile
+    image: arm-php-fpm-mysql:8.2
     ports:
       - '6000:6000'
       - '8000:8000'
@@ -22,27 +20,12 @@ services:
     environment:
       - APP_ENV=local
   artisan:
-    build:
-      context: ./.docker/php-x86-image
-      dockerfile: Dockerfile
+    image: arm-php-fpm-mysql:8.2
     volumes:
       - ./wsr:/var/www/html:rw,cached
       - ./.docker/conf/php/php.ini:/usr/local/etc/php/php.ini:ro
     container_name: wsr-artisan
     entrypoint: [ 'php', '/var/www/html/artisan']
-    networks:
-      - wsr-network
-    environment:
-      - APP_ENV=local
-  composer:
-    build:
-      context: ./.docker/php-x86-image
-      dockerfile: Dockerfile
-    volumes:
-      - ./wsr:/var/www/html:rw,cached
-      - ./.docker/conf/php/php.ini:/usr/local/etc/php/php.ini:ro
-    container_name: wsr-composer
-    entrypoint: [ '/usr/local/bin/composer' ]
     networks:
       - wsr-network
     environment:
